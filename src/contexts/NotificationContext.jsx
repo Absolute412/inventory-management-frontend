@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from "react";
-import axios from "../api/axiosInstance";
+import axios from "../lib/axiosInstance";
 import { useAuth } from "../hooks/useAuth";
 
 const NotificationContext = createContext(null);

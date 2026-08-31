@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import axios from "../../api/axiosInstance";
+import axios from "../../lib/axiosInstance";
 import { useAuth } from "../../hooks/useAuth";
 import { useInventory } from "../../hooks/useInventory";
 import { BRANCH_TYPE_CONFIG } from "../configs/branchConfig";

@@ -1,6 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useEffect, useState } from "react";
-import axios from "../api/axiosInstance";
+import axios from "../lib/axiosInstance";
 
 export const AuthContext = createContext();
 

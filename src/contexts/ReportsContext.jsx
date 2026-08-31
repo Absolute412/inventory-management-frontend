@@ -1,6 +1,6 @@
 import { createContext, useCallback, useEffect, useMemo, useState, } from "react";
 import { useAuth } from "../hooks/useAuth";
-import axios from "../api/axiosInstance";
+import axios from "../lib/axiosInstance";
 
 const ReportsContext = createContext(null);
 
