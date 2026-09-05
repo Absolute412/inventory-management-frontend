@@ -38,10 +38,8 @@ export const Inventory = () => {
             unit: item.unit,
             branchId: item.branch?.id,
             branch: item.branch,
-            openingStock: Number(item.openingStock ?? 0),
-            stockAdded: Number(item.stockAdded ?? 0),
-            remainingStock: Number(item.remainingStock ?? 0),
-            soldOrUsed: Number(item.soldOrUsed ?? 0),
+            currentStock: Number(item.currentStock ?? 0),
+            minimumStock: Number(item.minimumStock ?? 0),
         }));
     }, [inventory]);
 
@@ -81,11 +79,12 @@ export const Inventory = () => {
     };
 
     const totalItems = visibleItems.length;
-    const totalStock = visibleItems.reduce((sum, item) => sum + item.remainingStock, 0);
-    const lowStockCount = visibleItems.filter((item) => {
-        const totalAvailable = item.openingStock + item.stockAdded;
-        return totalAvailable > 0 && item.remainingStock / totalAvailable < 0.35;
-    }).length;
+
+    const totalStock = visibleItems.reduce((sum, item) => sum + item.currentStock, 0);
+
+    const lowStockCount = visibleItems.filter((item) => 
+        item.currentStock <= item.minimumStock
+    ).length;
 
     return (
         <>

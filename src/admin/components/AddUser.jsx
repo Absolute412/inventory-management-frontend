@@ -204,7 +204,7 @@ export const AddUser = ({
     };
 
     return (
-        <div className="relative w-full max-w-xl  max-h-110 overflow-y-auto rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow)">
+        <div className="relative w-full max-w-xl rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-(--shadow)">
             <button
                 type="button"
                 onClick={onClose}
@@ -217,7 +217,7 @@ export const AddUser = ({
                 {editingUser ? "Edit User" : "Add User"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 max-h-110 overflow-y-auto">
                 <div>
                     <label className="mb-1 block text-sm font-medium">Name</label>
                     <input 

@@ -31,10 +31,22 @@ export const InventorySnapshot = ({ visibleItems, formatNumber, showBranchPills 
       ) : (
         <div className="mt-5 space-y-4">
             {visibleItems.map((item) => {
-                const totalAvailable = item.openingStock + item.stockAdded;
-                const percent = totalAvailable > 0
-                    ? Math.min(100, Math.round((item.remainingStock / totalAvailable) * 100))
-                    : 0;
+                const currentStock = Number(item.currentStock ?? 0);
+                const minimumStock = Number(item.minimumStock ?? 0);
+
+                const status = currentStock === 0
+                    ? "Out of stock"
+                    : currentStock <= minimumStock
+                        ? "Low stock"
+                        : "Healthy";
+
+                const statusColor = currentStock === 0
+                    ? "bg-(--danger) text-white"
+                    : currentStock <= minimumStock
+                        ? "bg-(--warning) text-white"
+
+                        : "bg-(--success) text-white";
+
                 const branchName = item.branchName || "Unknown branch";
 
                 return (
@@ -45,25 +57,32 @@ export const InventorySnapshot = ({ visibleItems, formatNumber, showBranchPills 
                         <div className="flex items-start justify-between gap-3">
                             <div>
                                 <h3 className="font-bold">{item.name}</h3>
-                                <p className="text-xs text-(--text-muted)">
-                                    {item.category} - {item.unit}
-                                </p>
+                                <p className="text-xs text-(--text-muted)">{item.category} - {item.unit}</p>
+
                                 {showBranchPills && (
                                     <span className="mt-2 inline-flex rounded-full bg-(--surface-elevated) px-3 py-1 text-[11px] font-semibold text-(--text-muted)">
-                                    {branchName}
+                                        {branchName}
                                     </span>
                                 )}
                             </div>
-                            <span className="rounded-full bg-(--surface-elevated) px-3 py-1 text-xs font-bold">
-                                {percent}% left
+
+                            <span className={`rounded-full px-3 py-1 text-xs font-bold ${statusColor}`}>
+                                {status}
                             </span>
                         </div>
-                        <div className="mt-4 h-2 overflow-hidden rounded-full bg-(--surface-elevated)">
-                            <div className="h-full rounded-full bg-(--accent)" style={{ width: `${percent}%` }} />
+
+                        <div className="mt-4">
+                            <p className="text-2xl font-bold">{formatNumber(currentStock)}</p>
+                            <p className="mt-1 text-xs text-(--text-muted)">
+                                {item.unit} currently in stock
+                            </p>
                         </div>
-                        <div className="mt-3 flex justify-between text-xs text-(--text-muted)">
-                            <span>Used {formatNumber(item.soldOrUsed)}</span>
-                            <span>{formatNumber(item.remainingStock)} left</span>
+
+                        <div className="mt-3 pt-3 border-t border-(--border) flex items-center justify-between">
+                            <span className="text-xs text-(--text-muted)">Minimum stock level</span>
+                            <span className="text-xs font-semibold text-(--accent)">
+                                {formatNumber(minimumStock)} {item.unit}
+                            </span>
                         </div>
                     </div>
                 );

@@ -8,7 +8,7 @@ export const NotificationDropdown = ({
   onDeleteAll = () => {},
 }) => {
   return (
-    <div className="absolute right-0 top-full z-50 mt-3 w-[min(380px,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-(--shadow)">
+    <div className="absolute left-1/2 top-full z-50 mt-3 w-[min(380px,calc(100vw-2rem))] -translate-x-1/2 overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-(--shadow) sm:left-auto sm:right-0 sm:translate-x-0">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-(--border) px-4 py-3">
         <div>

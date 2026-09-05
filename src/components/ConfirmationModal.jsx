@@ -33,7 +33,7 @@ export const ConfirmationModal = ({
             className={`
                 flex h-14 w-14 items-center justify-center rounded-2xl border
                 ${danger
-                    ? "bg-rose-100 border-rose-200 dark:bg-rose-950/40 dark:border-rose-900 text-rose-700 dark:text-rose-200"
+                    ? "bg-rose-100 border-rose-200 dark:bg-rose-950/40 dark:border-rose-900 text-rose-700 dark:text-rose-400"
                     : "bg-(--surface-muted) border-(--border) text-(--text-muted)"
                 }`}
             aria-hidden="true"

@@ -2,7 +2,7 @@ import { Icon } from "@iconify/react";
 import { useMemo, useState } from "react";
 import { Dropdown } from "./Dropdown";
 
-const sortOptions = ["Most Remaining", "Least Remaining", "Category", "Name"];
+const sortOptions = ["Most Stock", "Least Stock", "Category", "Name"];
 const formatNumber = (value) => new Intl.NumberFormat("en-US").format(value);
 
 export const InventoryTable = ({ 
@@ -19,7 +19,7 @@ export const InventoryTable = ({
     }, [inventoryItems]);
 
     const [selectedCategory, setSelectedCategory] = useState("All Categories");
-    const [sortBy, setSortBy] = useState("Most Remaining");
+    const [sortBy, setSortBy] = useState("Most Stock");
 
     const normalizedItems = useMemo(() =>
         inventoryItems.map((item) => ({
@@ -29,13 +29,9 @@ export const InventoryTable = ({
           unit: item.unit,
           branch: item.branch,
           branchName: item.branch?.name || "Main Branch",
-          openingStock: Number(item.openingStock ?? 0),
-          stockAdded: Number(item.stockAdded ?? 0),
-          remainingStock: Number(item.remainingStock ?? 0),
-          soldOrUsed: Number(item.soldOrUsed ?? 0),
-        })),
-    
-      [inventoryItems]);
+          currentStock: Number(item.currentStock ?? 0),
+          minimumStock: Number(item.minimumStock ?? 0),
+        })), [inventoryItems]);
 
       const filteredItems = useMemo(() => {
         const items = normalizedItems.filter((item) =>
@@ -45,12 +41,12 @@ export const InventoryTable = ({
             );
 
             return [...items].sort((a, b) => {
-                if (sortBy === "Most Remaining") {
-                    return b.remainingStock - a.remainingStock;
+                if (sortBy === "Most Stock") {
+                    return b.currentStock - a.currentStock;
                 }
 
-                if (sortBy === "Least Remaining") {
-                    return a.remainingStock - b.remainingStock;
+                if (sortBy === "Least Stock") {
+                    return a.currentStock - b.currentStock;
                 }
 
                 if (sortBy === "Category") {
@@ -117,29 +113,22 @@ export const InventoryTable = ({
                             <tr className="text-sm uppercase tracking-[0.12em] text-(--text-muted)">
                                 <th className="px-4 py-3">Item</th>
                                 <th className="px-4 py-3">Category</th>
-                                <th className="px-4 py-3">Opening</th>
-                                <th className="px-4 py-3">Added</th>
-                                <th className="px-4 py-3">Used</th>
-                                <th className="px-4 py-3">Remaining</th>
+                                <th className="px-4 py-3">Current</th>
+                                <th className="px-4 py-3">Minimum</th>
                                 <th className="px-4 py-3">Status</th>
                                 <th className="px-4 py-3">Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                            {filteredItems.map((item) => {
-                                const totalAvailable = item.openingStock + item.stockAdded;
+                            {filteredItems.map((item) => {                                
+                                const status = item.currentStock === 0
+                                    ? "Out of stock" 
+                                    : item.currentStock <= item.minimumStock
+                                        ? "Low" 
+                                        : "Healthy";
 
-                                const percent = totalAvailable > 0
-                                    ? Math.round((item.remainingStock / totalAvailable) * 100)
-                                    : 0;
-                                
-                                const status = percent <= 20
-                                    ? "Critical" 
-                                    : percent <= 35
-                                        ? "Low" : "Healthy";
-
-                                const statusColor = status === "Critical"
+                                const statusColor = status === "Out of stock"
                                     ? "bg-(--danger) text-white"
                                     :  status === "Low"
                                         ? "bg-(--warning) text-white"
@@ -159,37 +148,19 @@ export const InventoryTable = ({
                                             {item.category}
                                         </td>
 
-                                        {/* Total */}
-                                        <td className="px-4 py-4 text-sm text-(--text-muted)">
-                                            {formatNumber(item.openingStock)}
+                                        {/* Current stock */}
+                                        <td className="px-4 py-4 text-sm font-semibold">
+                                            {formatNumber(item.currentStock)}
                                         </td>
 
-                                        {/* Stock added */}
-                                        <td className="px-4 py-4 text-sm text-(--text-muted)">
-                                            {formatNumber(item.stockAdded)}
-                                        </td>
-
-                                        {/* Used */}
-                                        <td className="px-4 py-4 text-sm text-(--text-muted)">
-                                            {formatNumber(item.soldOrUsed)}
-                                        </td>
-
-                                        {/* Remaining */}
-                                        <td className="px-4 py-4">
-                                            <div className="text-sm font-semibold">
-                                                {formatNumber(item.remainingStock)}
-                                            </div>
-                                            <div className="mt-2 h-2 overflow-hidden rounded-full bg-(--surface-muted)">
-                                            <div
-                                                className="h-full rounded-full bg-(--accent)"
-                                                style={{ width: `${percent}%` }}
-                                            />
-                                            </div>
+                                        {/* Minimum stock */}
+                                        <td className="px-4 py-4 text-sm font-semibold">
+                                            {formatNumber(item.minimumStock)}
                                         </td>
 
                                         <td className="px-4 py-4">
                                             <span
-                                                className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold text-white ${statusColor}`}
+                                                className={`inline-flex rounded-full px-3 py-1 text-xs whitespace-nowrap font-semibold text-white ${statusColor}`}
                                             >
                                                 {status}
                                             </span>

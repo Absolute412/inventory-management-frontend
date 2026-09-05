@@ -20,10 +20,8 @@ const getInitialFormData = (
       name: editingInventory.name ?? "",
       category: editingInventory.category ?? "",
       unit: editingInventory.unit ?? "",
-      openingStock: editingInventory.openingStock ?? "",
-      stockAdded: editingInventory.stockAdded ?? "",
-      remainingStock: editingInventory.remainingStock ?? "",
-      soldOrUsed: editingInventory.soldOrUsed ?? "",
+      currentStock: editingInventory.currentStock ?? "",
+      minimumStock: editingInventory.minimumStock ?? "",
     };
   }
 
@@ -32,6 +30,8 @@ const getInitialFormData = (
     name: presetName || "",
     category: presetCategory || "",
     unit: presetUnit || "",
+    currentStock: "",
+    minimumStock: "",
   };
 };
 
@@ -107,30 +107,24 @@ export const AddInventory = ({
     }));
   };
 
-  const computedRemainingStock =
-    Number(formData.openingStock || 0) + Number(formData.stockAdded || 0) - Number(formData.soldOrUsed || 0);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     try {
-      const openingStockValue = Number(formData.openingStock || 0);
-      const stockAddedValue = Number(formData.stockAdded || 0);
-      const soldOrUsedValue = Number(formData.soldOrUsed || 0);
+      const currentStockValue = Number(formData.currentStock || 0);
+      const minimumStockValue = Number(formData.minimumStock || 0);
 
-      if (soldOrUsedValue > openingStockValue + stockAddedValue) {
-        throw new Error("Used / sold cannot exceed total available stock");
+      if (currentStockValue < 0 || minimumStockValue < 0) {
+        throw new Error("Stock values cannot be negative");
       }
 
       const payload = {
         name: formData.name.trim(),
         category: formData.category.trim(),
         unit: formData.unit.trim(),
-        openingStock: openingStockValue,
-        stockAdded: stockAddedValue,
-        soldOrUsed: soldOrUsedValue,
-        remainingStock: computedRemainingStock,
+        currentStock: currentStockValue,
+        minimumStock: minimumStockValue,
         branchId: selectedBranch?.id,
       };
 
@@ -151,10 +145,6 @@ export const AddInventory = ({
     } finally {
       setSubmitting(false);
     }
-
-    // console.log("editingInventory", editingInventory);
-    // console.log("selectedBranch", selectedBranch);
-    // console.log("accessibleBranches", accessibleBranches);
   };
 
   return (
@@ -194,12 +184,12 @@ export const AddInventory = ({
 
         <div className="grid gap-3 sm:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium">Total stock</label>
+            <label className="mb-1 block text-sm font-medium">Current stock</label>
             <input
-              name="openingStock"
+              name="currentStock"
               type="number"
               min="0"
-              value={formData.openingStock}
+              value={formData.currentStock}
               onChange={handleChange}
               placeholder="0"
               className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-3 py-2.5 text-sm outline-none transition duration-200 focus:border-(--accent) focus:ring-4 focus:ring-(--accent)"
@@ -207,38 +197,12 @@ export const AddInventory = ({
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium">Stock added</label>
+            <label className="mb-1 block text-sm font-medium">Minimum stock</label>
             <input
-              name="stockAdded"
+              name="minimumStock"
               type="number"
               min="0"
-              value={formData.stockAdded}
-              onChange={handleChange}
-              placeholder="0"
-              className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-3 py-2.5 text-sm outline-none transition duration-200 focus:border-(--accent) focus:ring-4 focus:ring-(--accent)"
-            />
-          </div>
-          
-          <div>
-            <label className="mb-1 block text-sm font-medium">Remaining stock</label>
-            <input
-              name="remainingStock"
-              type="number"
-              min="0"
-              value={computedRemainingStock}
-              readOnly
-              placeholder="0"
-              className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-3 py-2.5 text-sm outline-none transition duration-200 focus:border-(--accent) focus:ring-4 focus:ring-(--accent)"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1 block text-sm font-medium">Used / sold</label>
-            <input
-              name="soldOrUsed"
-              type="number"
-              min="0"
-              value={formData.soldOrUsed}
+              value={formData.minimumStock}
               onChange={handleChange}
               placeholder="0"
               className="w-full rounded-xl border border-(--border) bg-(--surface-elevated) px-3 py-2.5 text-sm outline-none transition duration-200 focus:border-(--accent) focus:ring-4 focus:ring-(--accent)"

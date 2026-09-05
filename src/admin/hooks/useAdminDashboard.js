@@ -66,10 +66,8 @@ export const useAdminDashboard = () => {
             branchName: item.branch?.name || "Unknown branch",
             unit: item.unit,
             category: item.category,
-            openingStock: Number(item.openingStock ?? 0),
-            stockAdded: Number(item.stockAdded ?? 0),
-            soldOrUsed: Number(item.soldOrUsed ?? 0),
-            remainingStock: Number(item.remainingStock ?? 0),
+            currentStock: Number(item.currentStock ?? 0),
+            minimumStock: Number(item.minimumStock ?? 0),
         }));
     }, [inventory]);
 

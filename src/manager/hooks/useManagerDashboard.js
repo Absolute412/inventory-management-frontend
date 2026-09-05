@@ -133,8 +133,8 @@ export const useManagerDashboard = () => {
     [sortedReports, getReportMetrics]
   );
 
-  const maxTrendPrimary = Math.max(...trendData.map((item) => item.primary), 1);
-  const maxTrendSecondary = Math.max(...trendData.map((item) => item.secondary), 1);
+  // const maxTrendPrimary = Math.max(...trendData.map((item) => item.primary), 1);
+  // const maxTrendSecondary = Math.max(...trendData.map((item) => item.secondary), 1);
 
   const inventorySnapshot = useMemo(() => {
     return (inventory || []).map((item) => ({
@@ -144,10 +144,8 @@ export const useManagerDashboard = () => {
       branchName: item.branch?.name || "Unknown branch",
       unit: item.unit,
       category: item.category,
-      openingStock: Number(item.openingStock ?? 0),
-      stockAdded: Number(item.stockAdded ?? 0),
-      soldOrUsed: Number(item.soldOrUsed ?? 0),
-      remainingStock: Number(item.remainingStock ?? 0),
+      currentStock: Number(item.currentStock ?? 0),
+      minimumStock: Number(item.minimumStock ?? 0),
     }));
   }, [inventory]);
 
@@ -205,8 +203,8 @@ export const useManagerDashboard = () => {
     latestReport,
     latestReportMetrics,
     trendData,
-    maxTrendPrimary,
-    maxTrendSecondary,
+    // maxTrendPrimary,
+    // maxTrendSecondary,
     inventorySnapshot,
     visibleItems,
     stats,

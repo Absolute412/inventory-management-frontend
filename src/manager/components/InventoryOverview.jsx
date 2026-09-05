@@ -38,7 +38,7 @@ export const InventoryOverview = ({ onAddClick, totalItems, lowStockCount, total
                 </article>
 
                 <article className="rounded-(--radius) border border-(--border) bg-(--surface) p-4">
-                    <p className="text-sm font-semibold text-(--text-muted)">Remaining units</p>
+                    <p className="text-sm font-semibold text-(--text-muted)">Current stock units</p>
                     <h2 className="mt-3 text-3xl font-bold">
                         {formatNumber(totalStock)}
                     </h2>
