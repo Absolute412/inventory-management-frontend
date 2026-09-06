@@ -1,7 +1,6 @@
 import { Navigate, createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { PublicRoute } from './components/PublicRoute';
 import { Login } from './components/Login';
-import { Signup } from './components/Signup';
 import { NotFound } from './pages/NotFound';
 import { RoleRoute } from './components/RoleRoute';
 import { AdminLayout } from './layouts/AdminLayout';
@@ -26,7 +25,6 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="/login" replace /> },
       { path: "/login", element: <Login/> },
-      { path: "/signup", element: <Signup/> },
     ]
   },
   {

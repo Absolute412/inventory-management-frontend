@@ -68,7 +68,7 @@ export const ManagerInventory = () => {
   const totalStock = visibleItems.reduce((sum, item) => sum + item.currentStock, 0);
 
   const lowStockCount = visibleItems.filter((item) => 
-    item.currentStock <= item.minimumStock,
+    item.currentStock < item.minimumStock,
   ).length;
 
   const handleAdd = () => {
