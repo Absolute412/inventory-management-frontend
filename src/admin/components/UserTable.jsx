@@ -2,6 +2,11 @@ import { Icon } from "@iconify/react";
 import { useMemo, useState } from "react";
 import { Dropdown } from "../../manager/components/Dropdown";
 
+const roleLabels = {
+    ADMIN: "Admin",
+    MANAGER: "Manager",
+};
+
 const sortOptions = ["Newest", "Oldest", "Name", "Email", "Role", "Branch"];
 
 export const UserTable = ({
@@ -13,11 +18,19 @@ export const UserTable = ({
     const [selectedRole, setSelectedRole] = useState("All Roles");
     const [sortBy, setSortBy] = useState("Role");
 
-    const roleOptions = useMemo(() => {
+    const roleFilters = useMemo(() => {
         const roles = [...new Set(users.map((user) => user.role).filter(Boolean))];
 
-        return ["All Roles", ...roles];
+        return [
+            { label: "All Roles", value: "ALL" },
+            ...roles.map((role) => ({
+                label: roleLabels[role] ?? role,
+                value: role,
+            })),
+        ];
     }, [users]);
+
+    const roleOptions = roleFilters.map((role) => role.label);
 
     const normalizedUsers = useMemo(() => {
         return (users || []).map((user) => ({
@@ -27,8 +40,12 @@ export const UserTable = ({
     }, [users]);
 
     const filteredUsers = useMemo(() => {
+        const selectedFilter = roleFilters.find((role) => role.label === selectedRole);
+
         const visibleUsers = normalizedUsers.filter((user) =>
-            selectedRole === "All Roles" ? true : user.role === selectedRole,
+            selectedFilter?.value === "ALL"
+                ? true
+                : user.role === selectedFilter?.value,
         );
 
         return [...visibleUsers].sort((a, b) => {
@@ -54,7 +71,7 @@ export const UserTable = ({
 
             return (a.branchName ?? "").localeCompare(b.branchName ?? "");
         });
-    }, [normalizedUsers, selectedRole, sortBy]);
+    }, [normalizedUsers, roleFilters, selectedRole, sortBy]);
 
     return (
         <section className="rounded-(--radius) border border-(--border) bg-(--surface-muted) p-6 shadow-(--shadow)">
@@ -69,7 +86,7 @@ export const UserTable = ({
                         icon="material-symbols:category"
                         filter={selectedRole}
                         options={roleOptions}
-                        onSelect={(value) => setSelectedRole(value)}
+                        onSelect={setSelectedRole}
                     />
 
                     <Dropdown
@@ -128,7 +145,7 @@ export const UserTable = ({
                                 >
                                     <td className="px-4 py-4 text-sm text-(--text-muted)">{user.name}</td>
                                     <td className="px-4 py-4 text-sm text-(--text-muted)">{user.email}</td>
-                                    <td className="px-4 py-4 text-sm text-(--text-muted)">{user.role}</td>
+                                    <td className="px-4 py-4 text-sm text-(--text-muted)">{roleLabels[user.role] ?? user.role}</td>
                                     <td className="px-4 py-4 text-sm text-(--text-muted)">{user.branchName}</td>
 
                                     <td className="px-4 py-4">
